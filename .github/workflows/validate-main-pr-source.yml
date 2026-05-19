@@ -1,0 +1,29 @@
+name: Validate PR Source for Main
+
+# Runs on every PR targeting main, regardless of source branch.
+on:
+  pull_request:
+    branches: [main]
+
+# Read-only token - this workflow only inspects metadata, never touches code.
+permissions:
+  contents: read
+
+jobs:
+  validate-source:
+    name: Verify PR source branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check source branch
+        shell: pwsh
+        run: |
+          $source = "${{ github.head_ref }}"
+
+          # Accept staging directly, or anything under hotfix/*
+          if ($source -eq "staging" -or $source -like "hotfix/*") {
+            Write-Output "Source branch '$source' is allowed. OK."
+            exit 0
+          }
+
+          Write-Output "::error::PRs to main must come from 'staging' or a 'hotfix/*' branch. This PR is from '$source'."
+          exit 1
