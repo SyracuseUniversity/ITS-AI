@@ -19,11 +19,11 @@ jobs:
         run: |
           $source = "${{ github.head_ref }}"
 
-          # Accept staging directly
-          if ($source -eq "staging") {
+          # Accept dev directly
+          if ($source -eq "dev") {
             Write-Output "Source branch '$source' is allowed. OK."
             exit 0
           }
 
-          Write-Output "::error::PRs to main must come from 'staging' branch. This PR is from '$source'."
+          Write-Output "::error::PRs to main must come from 'dev' branch. This PR is from '$source'."
           exit 1
